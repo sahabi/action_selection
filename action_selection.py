@@ -44,7 +44,7 @@ def update_P(P,K):
         P[key] = K[key]*P[key]/float(norm)
     return P
 
-def get_max_states(P):
+def get_max(P):
     maximum =  max(P.iteritems(), key=operator.itemgetter(1))[1]
     max_s = []
     for key in P:
@@ -96,17 +96,32 @@ def get_s_h_l(current_s, action, S_max):
             s_l[(current_s,action)].append(state)
     return(s_h,s_l)
 
-def get_delta_action(current_s, S_max):
+def get_delta_action(current_s, S_max, actions):
+    delta_action_dict = {}
     
+    for action in actions:
+        (s_h,s_l) = get_s_h_l(current_s, S_max, action)
+        s_h_num = len(s_h[(current_s,action)])
+        s_l_num = len(s_l[(current_s,action)])
+        delta_action = abs(s_h_num - s_l_num)
+        delta_action_dict[action] = delta_action
+        
+    return delta_action_dict
     
-def pick_action(delta_action):
-    
+def pick_action(delta_action_dict, current_state, target_state):
+    actions = get_max(delta_action_dict)
+    if len(actions) == 1:
+        return actions[0]
+    if len(actions) > 1:
+        for action in actions:
+            if manhattan_dist(move(current_state,action),target_state) < manhattan_dist(current_state,target_state):
+                return action
 
 
 P = {(0,0):0,(0,1):0,(0,2):0,(0,3):0,(1,0):0,(1,1):0,(1,2):0,(1,3):0,(2,0):0,(2,1):0,(2,2):0,(2,3):0,(3,0):0,(3,1):0,(3,2):0,(3,3):0}
 P = init_probs(P)
 K = det_k(P,(0,3),'east')
 P = update_P(P,K)
-S = get_max_states(P)
+S = get_max(P)
 T = get_target((2,0),S)
 print T
