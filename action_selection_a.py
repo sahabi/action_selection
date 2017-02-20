@@ -76,58 +76,30 @@ def det_k(P,prev_state,action, response):
 def det_all_k(s,states,actions, responses):
     kl = 1
     kh = 4
+    ka = (kl+kh)/2.
     P = s
 
     for i in range(len(states)):
-        if actions[i] == 'east' and responses[i] == 1:
-            for key in P:
-                if key[0] <= states[i][0]:
-                    P[key].append(kl)
-                elif key[0] > states[i][0]:
-                    P[key].append(kh)
-        elif actions[i] == 'west' and responses[i] == 1:
-            for key in P:
-                if key[0] < states[i][0]:
-                    P[key].append(kh)
-                elif key[0] >= states[i][0]:
-                    P[key].append(kl)
-        elif actions[i] == 'north' and responses[i] == 1:
-            for key in P:
-                if key[1] < states[i][1]:
-                    P[key].append(kh)
-                elif key[1] >= states[i][1]:
-                    P[key].append(kl)
-        elif actions[i] == 'south' and responses[i] == 1:
-            for key in P:
-                if key[1] <= states[i][1]:
-                    P[key].append(kl)
-                elif key[1] > states[i][1]:
-                    P[key].append(kh)
 
-        elif actions[i] == 'east' and responses[i] == 0:
+        if responses[i] == 1:
             for key in P:
                 if key[0] <= states[i][0]:
-                    P[key].append(kh)
-                elif key[0] > states[i][0]:
                     P[key].append(kl)
-        elif actions[i] == 'west' and responses[i] == 0:
+                #elif key[0] == states[i][0]:
+                #    P[key].append(ka)
+                elif key[0] > states[i][0]:
+                    P[key].append(kh)
+        elif responses[i] == 0:
             for key in P:
                 if key[0] < states[i][0]:
-                    P[key].append(kl)
+                    P[key].append(kh)
+                #elif key[0] == states[i][0]:
+                #    P[key].append(ka)
                 elif key[0] >= states[i][0]:
-                    P[key].append(kh)
-        elif actions[i] == 'north' and responses[i] == 0:
-            for key in P:
-                if key[1] < states[i][1]:
                     P[key].append(kl)
-                elif key[1] >= states[i][1]:
-                    P[key].append(kh)
-        elif actions[i] == 'south' and responses[i] == 0:
-            for key in P:
-                if key[1] <= states[i][1]:
-                    P[key].append(kh)
-                elif key[1] > states[i][1]:
-                    P[key].append(kl)
+    print "responses", responses
+    print "states  :", states
+    print "P",P
     return P
 
 def update_P(P,K):
